@@ -1,0 +1,65 @@
+version: '3.4'
+
+name: prescription-hero-local
+
+services:
+  webapi:
+    container_name: WebApi
+    image: ${DOCKER_REGISTRY-}webapi
+    build:
+      context: .
+      dockerfile: WebAPI/Dockerfile
+    networks:
+      prescription-hero-net:
+        ipv4_address: 172.20.0.2
+    depends_on:
+      db:
+        condition: service_healthy
+
+   
+  db:
+    container_name: Db
+    image: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest
+    tty: true
+    restart: always
+    ports:
+        - "8081:8081"
+        - "8900:8900"
+        - "8901:8901"
+        - "8979:8979"
+        - "10250:10250"
+        - "10251:10251"
+        - "10252:10252"
+        - "10253:10253"
+        - "10254:10254"
+        - "10255:10255"
+        - "10256:10256"
+        - "10350:10350"
+    volumes:
+          - vol_cosmos:/data/db
+    networks:
+      prescription-hero-net:
+        ipv4_address: 172.20.0.3
+    healthcheck:
+      test: ["CMD", "curl", "-fk", "https://localhost:8081/_explorer/emulator.pem"]
+      interval: 5s
+      timeout: 5m
+      retries: 5
+      start_period: 5m
+    entrypoint: ["/bin/bash","-c"]
+    command: 
+       - |
+          apt-get update -y && apt-get install -y curl
+          /usr/local/bin/cosmos/start.sh
+
+networks:
+ prescription-hero-net:
+  driver: bridge
+  ipam:
+     config:
+       - subnet: 172.20.0.0/16
+
+volumes:
+    vol_cosmos:  
+  
+ 

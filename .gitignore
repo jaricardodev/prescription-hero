@@ -18,3 +18,4 @@
 /src/Infrastructure.Tests/obj
 /src/Application.Tests/bin
 /src/Infrastructure.Tests/bin/Debug/net8.0
+/src/Infrastructure.Tests/bin/Release/net8.0

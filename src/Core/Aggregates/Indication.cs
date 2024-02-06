@@ -2,5 +2,5 @@
 
 namespace Core.Aggregates
 {
-    public record Indication(Prescriber Prescriber, PatientPrescriptions[] indications);
+    public record Indication(Prescriber Prescriber, PatientPrescription patientPrescription);
 }
